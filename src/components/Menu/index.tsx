@@ -1,6 +1,6 @@
 import { HistoryIcon, HouseIcon, SettingsIcon, SunIcon } from 'lucide-react';
 import styles from './styles.module.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type availableThemes = 'dark' | 'light';
 
@@ -11,14 +11,22 @@ export const Menu = () => {
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
   ) {
     event.preventDefault();
-    const newTheme: availableThemes = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
+    setTheme(prevTheme => {
+      const newTheme: availableThemes = prevTheme === 'dark' ? 'light' : 'dark';
+      return newTheme;
+    });
   }
+
+  // trabalha com efeitos colaterais
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    return () => {
+      console.log('cleanup');
+    };
+  }, [theme]);
 
   return (
     <div className={styles.menu}>
-      <h1>{theme}</h1>
       <a
         className={styles.menuLink}
         href=''
